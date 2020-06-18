@@ -25,9 +25,32 @@
 #include "BitUtil.h"
 
 namespace TES3 {
-	unsigned int MagicEffectController::effectNameGMSTs[MAX_EFFECT_COUNT] = {};
-	unsigned int MagicEffectController::effectFlags[MAX_EFFECT_COUNT] = {};
-	unsigned int MagicEffectController::effectCounters[MAX_EFFECT_COUNT][5] = {};
+	unsigned int *MagicEffectController::effectNameGMSTs = nullptr;
+	unsigned int *MagicEffectController::effectFlags = nullptr;
+	unsigned int **MagicEffectController::effectCounters = nullptr;
+
+	struct InitMagicEffectControllerStatics {
+		InitMagicEffectControllerStatics() {
+			MagicEffectController::effectNameGMSTs = new unsigned int[MAX_EFFECT_COUNT]();
+			MagicEffectController::effectFlags = new unsigned int[MAX_EFFECT_COUNT]();
+			MagicEffectController::effectCounters = new unsigned int*[MAX_EFFECT_COUNT]();
+
+			for (size_t i = 0; i < MAX_EFFECT_COUNT; i++) {
+				MagicEffectController::effectCounters[i] = new unsigned int[5];
+			}
+		}
+
+		~InitMagicEffectControllerStatics() {
+			delete[] MagicEffectController::effectNameGMSTs;
+			delete[] MagicEffectController::effectFlags;
+
+			for (size_t i = 0; i < MAX_EFFECT_COUNT; i++) {
+				delete[] MagicEffectController::effectCounters[i];
+			}
+
+			delete[] MagicEffectController::effectCounters;
+		}
+	} g_initMagicEffectControllerStatics;
 
 	MagicEffectController::MagicEffectController() {
 

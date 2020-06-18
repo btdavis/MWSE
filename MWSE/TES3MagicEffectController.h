@@ -69,8 +69,8 @@ namespace TES3 {
 		std::unordered_map<int, std::string> effectCustomNames;
 
 		// Unimplemented.
-		static unsigned int effectNameGMSTs[MAX_EFFECT_COUNT];
-		static unsigned int effectFlags[MAX_EFFECT_COUNT];
-		static unsigned int effectCounters[MAX_EFFECT_COUNT][5];
+		static unsigned int *effectNameGMSTs;
+		static unsigned int *effectFlags;
+		static unsigned int **effectCounters;
 	};
 }
