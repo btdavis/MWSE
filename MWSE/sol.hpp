@@ -20,8 +20,8 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // This file was generated with a script.
-// Generated 2020-06-06 16:05:12.150007 UTC
-// This header was generated with sol v3.2.1 (revision e09d2ff)
+// Generated 2020-06-18 22:17:10.286043 UTC
+// This header was generated with sol v3.2.1 (revision 162fdd74)
 // https://github.com/ThePhD/sol2
 
 #ifndef SOL_SINGLE_INCLUDE_HPP
@@ -7476,8 +7476,7 @@ namespace sol {
 			return trampoline(L, f);
 		}
 #else
-		template <lua_CFunction f>
-		int static_trampoline(lua_State* L) {
+		inline int impl_static_trampoline(lua_State* L, lua_CFunction f) {
 #if defined(SOL_EXCEPTIONS_SAFE_PROPAGATION) && !defined(SOL_LUAJIT)
 			return f(L);
 
@@ -7504,6 +7503,11 @@ namespace sol {
 #endif // LuaJIT cannot have the catchall, but we must catch std::exceps for it
 			return lua_error(L);
 #endif // Safe exceptions
+		}
+
+		template <lua_CFunction f>
+		int static_trampoline(lua_State* L) {
+			return impl_static_trampoline(L, f);
 		}
 
 #ifdef SOL_NOEXCEPT_FUNCTION_TYPE
@@ -7620,7 +7624,7 @@ namespace detail {
 		"`anonymous namespace'" } };
 
 #if defined(__GNUC__) || defined(__clang__)
-	static std::string internal_ctti_get_type_name(std::string name) {
+	inline std::string ctti_get_type_name_from_sig(std::string name) {
 		// cardinal sins from MINGW
 		using namespace std;
 		std::size_t start = name.find_first_of('[');
@@ -7655,10 +7659,10 @@ namespace detail {
 
 	template <typename T, class seperator_mark = int>
 	inline std::string ctti_get_type_name() {
-		return internal_ctti_get_type_name(__PRETTY_FUNCTION__);
+		return ctti_get_type_name_from_sig(__PRETTY_FUNCTION__);
 	}
 #elif defined(_MSC_VER)
-	static std::string internal_ctti_get_type_name(std::string name) {
+	inline std::string ctti_get_type_name_from_sig(std::string name) {
 		std::size_t start = name.find("get_type_name");
 		if (start == std::string::npos)
 			start = 0;
@@ -7692,7 +7696,7 @@ namespace detail {
 
 	template <typename T>
 	std::string ctti_get_type_name() {
-		return internal_ctti_get_type_name(__FUNCSIG__);
+		return ctti_get_type_name_from_sig(__FUNCSIG__);
 	}
 #else
 #error Compiler not supported for demangling
@@ -7704,9 +7708,9 @@ namespace detail {
 		return realname;
 	}
 
-	static std::string internal_short_demangle_once(std::string realname) {
+	inline std::string short_demangle_from_type_name(std::string realname) {
 		// This isn't the most complete but it'll do for now...?
-		static const std::array<std::string, 10> ops = { {"operator<", "operator<<", "operator<<=", "operator<=", "operator>", "operator>>", "operator>>=", "operator>=", "operator->", "operator->*"} };
+		static const std::array<std::string, 10> ops = {{"operator<", "operator<<", "operator<<=", "operator<=", "operator>", "operator>>", "operator>>=", "operator>=", "operator->", "operator->*"}};
 		int level = 0;
 		std::ptrdiff_t idx = 0;
 		for (idx = static_cast<std::ptrdiff_t>(realname.empty() ? 0 : realname.size() - 1); idx > 0; --idx) {
@@ -7743,7 +7747,7 @@ namespace detail {
 	template <typename T>
 	std::string short_demangle_once() {
 		std::string realname = ctti_get_type_name<T>();
-		return internal_short_demangle_once(realname);
+		return short_demangle_from_type_name(realname);
 	}
 
 	template <typename T>
