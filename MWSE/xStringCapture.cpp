@@ -25,6 +25,8 @@
 #include "Log.h"
 #include "StringUtil.h"
 
+#include <regex>
+
 using namespace mwse;
 
 namespace mwse
@@ -53,9 +55,9 @@ namespace mwse
 		// Go and try to get all of our matches, to a limit of the count given to us as our 3rd parameter.
 		long matchesReturned = 0;
 		try {
-			boost::regex regex_pattern(pattern);
-			boost::smatch regex_matches;
-			if (boost::regex_search(string, regex_matches, regex_pattern)) {
+			std::regex regex_pattern(pattern);
+			std::smatch regex_matches;
+			if (std::regex_search(string, regex_matches, regex_pattern)) {
 				// The capture groups begin at index 1, so start there.
 				for (size_t i = 1; i < regex_matches.size(); i++) {
 					// Bail out if we're past our desired number of matches.
@@ -70,7 +72,7 @@ namespace mwse
 				}
 			}
 		}
-		catch (boost::regex_error& e) {
+		catch (std::regex_error& e) {
 			mwse::log::getLog() << "xStringCapture: A regex exception has occurred. " << e.what() << std::endl;
 		}
 

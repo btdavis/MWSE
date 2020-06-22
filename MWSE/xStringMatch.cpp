@@ -25,6 +25,8 @@
 #include "Log.h"
 #include "StringUtil.h"
 
+#include <regex>
+
 using namespace mwse;
 
 namespace mwse
@@ -50,9 +52,9 @@ namespace mwse
 
 		bool result = false;
 		try {
-			result = boost::regex_search(string, boost::regex(pattern));
+			result = std::regex_search(string, std::regex(pattern));
 		}
-		catch (boost::regex_error&) {
+		catch (std::regex_error&) {
 			result = false;
 		}
 

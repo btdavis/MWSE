@@ -970,6 +970,9 @@
   <ItemGroup>
     <ResourceCompile Include="MWSE.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{CF29BC49-506F-4555-8849-5D59F2519D53}</ProjectGuid>
@@ -1007,15 +1010,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)deps\boost;$(SolutionDir)deps\LuaJIT\src;$(SolutionDir)deps\span-lite;$(SolutionDir)deps\DirectX8\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)deps\span-lite;$(SolutionDir)deps\DirectX8\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
-    <LibraryPath>$(OutDir);$(SolutionDir)deps\LuaJIT\src;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)deps\boost;$(SolutionDir)deps\LuaJIT\src;$(SolutionDir)deps\span-lite;$(SolutionDir)deps\DirectX8\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)deps\span-lite;$(SolutionDir)deps\DirectX8\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
-    <LibraryPath>$(OutDir);$(SolutionDir)deps\LuaJIT\src;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -1032,7 +1035,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dbghelp.lib;lua51.lib;luajit.lib;version.lib;Winmm.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dbghelp.lib;version.lib;Winmm.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
     <PostBuildEvent />
@@ -1068,7 +1071,7 @@ echo #define MWSE_BUILD_DATE %buildTime:~0,8% &gt;&gt; $(ProjectDir)/BuildDate.h
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>dbghelp.lib;lua51.lib;luajit.lib;version.lib;Winmm.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dbghelp.lib;version.lib;Winmm.lib;Strmiids.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
     <PostBuildEvent />
@@ -1087,5 +1090,12 @@ echo #define MWSE_BUILD_DATE %buildTime:~0,8% &gt;&gt; $(ProjectDir)/BuildDate.h
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\luajit.native.2.0.5\build\native\luajit.native.targets" Condition="Exists('..\packages\luajit.native.2.0.5\build\native\luajit.native.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\luajit.native.2.0.5\build\native\luajit.native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\luajit.native.2.0.5\build\native\luajit.native.targets'))" />
+  </Target>
 </Project>

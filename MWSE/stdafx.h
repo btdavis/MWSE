@@ -22,6 +22,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <regex>
 
 // Required C includes.
 #include <cmath>
@@ -49,9 +50,6 @@
 // TODO: Do this better with constexprs.
 #define _USE_MATH_DEFINES
 #include <math.h>
-
-// Evil devil-spawn legacy boost requirements.
-#include <boost/regex.hpp>
 
 // Core lua binding library.
 #include "sol.hpp"
